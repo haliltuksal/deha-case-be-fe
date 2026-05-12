@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build:
+      context: .
+      target: development
+    container_name: deha-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      LARAVEL_API_URL: ${LARAVEL_API_URL:-http://host.docker.internal:8080}
+      COOKIE_NAME: ${COOKIE_NAME:-deha_token}
+      REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-15000}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
