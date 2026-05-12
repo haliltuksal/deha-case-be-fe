@@ -1,0 +1,9 @@
+# Inner repo backups (will be deleted after push approval)
+backend/.git.bak/
+frontend/.git.bak/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp

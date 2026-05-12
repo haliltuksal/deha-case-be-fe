@@ -1,0 +1,961 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost:8080"
+        }
+    ],
+    "info": {
+        "name": "Dehasoft Case API",
+        "_postman_id": "a82a7e5f-9e58-4de4-94aa-24ea0d226e58",
+        "description": "Laravel 12 e-commerce API for the Dehasoft case study. JWT authentication, multi-currency display backed by daily TCMB exchange rates, and a transactional checkout flow with admin-gated order completion.",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Meta",
+            "description": "",
+            "item": [
+                {
+                    "name": "Health check",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/health",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/health"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Liveness \/ readiness probe. Returns the per-dependency state of the\ndatabase and redis. The HTTP status is 200 when every dependency\nanswers, otherwise 503 with the failing services flagged as `down`.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"status\": \"ok\",\n    \"timestamp\": \"2026-05-04T20:00:00+00:00\",\n    \"services\": {\n      \"database\": \"ok\",\n      \"redis\": \"ok\"\n    }\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 503,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"status\": \"degraded\",\n    \"timestamp\": \"2026-05-04T20:00:00+00:00\",\n    \"services\": {\n      \"database\": \"ok\",\n      \"redis\": \"down\"\n    }\n  }\n}",
+                            "name": "redis is unreachable"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "description": "",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Halil Tuksal\",\"email\":\"halil@example.com\",\"password\":\"secret123\",\"password_confirmation\":\"secret123\"}"
+                        },
+                        "description": "Create a new user account and immediately issue a JWT.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Hesap olu\u015fturuldu.\",\n  \"data\": {\n    \"access_token\": \"eyJ0eXAiOi...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n      \"id\": 7,\n      \"name\": \"Halil Tuksal\",\n      \"email\": \"halil@example.com\",\n      \"is_admin\": false,\n      \"created_at\": \"2026-05-04T20:00:00+00:00\"\n    }\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Bu e-posta adresi zaten kay\u0131tl\u0131.\",\n  \"data\": null,\n  \"code\": \"ERR_VALIDATION\",\n  \"errors\": {\"email\": [\"Bu e-posta adresi zaten kay\u0131tl\u0131.\"]}\n}",
+                            "name": "email already taken"
+                        }
+                    ]
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"customer@dehasoft.test\",\"password\":\"password\"}"
+                        },
+                        "description": "Verify credentials and return a fresh JWT.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Giri\u015f ba\u015far\u0131l\u0131.\",\n  \"data\": {\n    \"access_token\": \"eyJ0eXAiOi...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"Demo Customer\",\n      \"email\": \"customer@dehasoft.test\",\n      \"is_admin\": false,\n      \"created_at\": \"2026-05-04T18:00:00+00:00\"\n    }\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"The provided credentials are invalid.\",\n  \"data\": null,\n  \"code\": \"ERR_INVALID_CREDENTIALS\"\n}",
+                            "name": "bad credentials"
+                        },
+                        {
+                            "header": [],
+                            "code": 429,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Too many requests. Please slow down.\",\n  \"data\": null,\n  \"code\": \"ERR_TOO_MANY_REQUESTS\"\n}",
+                            "name": "rate limit exceeded"
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Blacklist the current bearer token so it cannot be reused."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "{}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/refresh",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/refresh"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Rotate the current bearer token. The previous token is blacklisted\nand a brand-new one is returned alongside the user payload."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Oturum yenilendi.\",\n  \"data\": {\n    \"access_token\": \"eyJ0eXAiOi...newer...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\"id\": 2, \"name\": \"Demo Customer\", \"email\": \"customer@dehasoft.test\", \"is_admin\": false, \"created_at\": \"2026-05-04T18:00:00+00:00\"}\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Current user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/auth\/me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/auth\/me"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return the user identified by the bearer token."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"Demo Customer\",\n    \"email\": \"customer@dehasoft.test\",\n    \"is_admin\": false,\n    \"created_at\": \"2026-05-04T18:00:00+00:00\"\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Products",
+            "description": "",
+            "item": [
+                {
+                    "name": "List products",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products",
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "kahve",
+                                    "description": "Filter by name or description (LIKE %term%).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Page size, 1\u2013100 (default 15).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number, 1-based (default 1).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v1\/products?search=kahve&per_page=15&page=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"search\":\"b\",\"per_page\":22,\"page\":67}"
+                        },
+                        "description": "Paginated catalogue. Each product carries `prices` in TRY\/USD\/EUR\ncomputed from the latest cached TCMB rates.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"name\": \"T\u00fcrk Kahvesi 250g\",\n        \"description\": \"Geleneksel T\u00fcrk kahvesi, taze \u00e7ekilmi\u015f.\",\n        \"stock\": 80,\n        \"base_currency\": \"TRY\",\n        \"price\": \"95.00\",\n        \"prices\": {\"TRY\": \"95.00\", \"USD\": \"2.10\", \"EUR\": \"1.79\"},\n        \"created_at\": \"2026-05-04T18:00:00+00:00\",\n        \"updated_at\": \"2026-05-04T18:00:00+00:00\"\n      }\n    ],\n    \"pagination\": {\"current_page\": 1, \"last_page\": 1, \"per_page\": 15, \"total\": 10}\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Show product",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Product id."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Fetch a single product with its multi-currency price block.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"T\u00fcrk Kahvesi 250g\",\n    \"description\": \"Geleneksel T\u00fcrk kahvesi, taze \u00e7ekilmi\u015f.\",\n    \"stock\": 80,\n    \"base_currency\": \"TRY\",\n    \"price\": \"95.00\",\n    \"prices\": {\"TRY\": \"95.00\", \"USD\": \"2.10\", \"EUR\": \"1.79\"},\n    \"created_at\": \"2026-05-04T18:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T18:00:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"The requested resource was not found.\",\n  \"data\": null,\n  \"code\": \"ERR_NOT_FOUND\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create product (admin)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Test Product\",\"description\":\"Premium quality.\",\"price\":\"99.99\",\"base_currency\":\"TRY\",\"stock\":10}"
+                        },
+                        "description": "Add a new product to the catalogue. Requires an admin bearer token."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"\u00dcr\u00fcn olu\u015fturuldu.\",\n  \"data\": {\n    \"id\": 11,\n    \"name\": \"Test Product\",\n    \"description\": \"Premium quality.\",\n    \"stock\": 10,\n    \"base_currency\": \"TRY\",\n    \"price\": \"99.99\",\n    \"prices\": {\"TRY\": \"99.99\", \"USD\": \"2.21\", \"EUR\": \"1.89\"},\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:00:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Administrator privileges are required.\",\n  \"data\": null,\n  \"code\": \"ERR_UNAUTHORIZED\"\n}",
+                            "name": "not an admin"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update product (admin)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "Product id."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Renamed Product\",\"description\":\"Eius et animi quos velit et.\",\"price\":\"149.99\",\"base_currency\":\"USD\",\"stock\":25}"
+                        },
+                        "description": "Patch any subset of fields on an existing product. Fields you omit\nstay untouched."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"\u00dcr\u00fcn g\u00fcncellendi.\",\n  \"data\": {\n    \"id\": 11,\n    \"name\": \"Renamed Product\",\n    \"description\": \"Premium quality.\",\n    \"stock\": 25,\n    \"base_currency\": \"USD\",\n    \"price\": \"149.99\",\n    \"prices\": {\"TRY\": \"6776.39\", \"USD\": \"149.99\", \"EUR\": \"128.04\"},\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:05:00+00:00\"\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete product (admin)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "Product id."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Remove a product from the catalogue. Cart entries referencing it\nare removed via cascade; existing order_item snapshots survive\nunchanged (FK is SET NULL on the order_items side)."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "{}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cart",
+            "description": "",
+            "item": [
+                {
+                    "name": "Show cart",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cart",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cart"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return the authenticated user's cart with each line's per-currency\nsubtotal and aggregated totals. The cart is created lazily on the\nfirst call so a brand-new account always sees an empty cart shape."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"id\": 1,\n    \"items\": [\n      {\n        \"product_id\": 1,\n        \"name\": \"T\u00fcrk Kahvesi 250g\",\n        \"quantity\": 2,\n        \"stock_available\": 80,\n        \"unit_price\": \"95.00\",\n        \"unit_currency\": \"TRY\",\n        \"subtotal\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"}\n      }\n    ],\n    \"totals\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"},\n    \"item_count\": 1,\n    \"total_quantity\": 2\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Clear cart",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cart",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cart"
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Drop every line from the cart. Idempotent \u2014 running it on an\nalready-empty cart still returns 204."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "{}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Add or increment cart item",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cart\/items",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cart\/items"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"product_id\":1,\"quantity\":2}"
+                        },
+                        "description": "Push a product onto the cart. If the product is already in the\ncart, the quantity is summed with the existing line. The combined\nquantity must not exceed the product's stock."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"\u00dcr\u00fcn sepete eklendi.\",\n  \"data\": {\n    \"id\": 1,\n    \"items\": [{\"product_id\": 1, \"name\": \"T\u00fcrk Kahvesi 250g\", \"quantity\": 2, \"stock_available\": 80, \"unit_price\": \"95.00\", \"unit_currency\": \"TRY\", \"subtotal\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"}}],\n    \"totals\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"},\n    \"item_count\": 1,\n    \"total_quantity\": 2\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Requested quantity exceeds the available stock.\",\n  \"data\": null,\n  \"code\": \"ERR_INSUFFICIENT_STOCK\",\n  \"details\": {\"product_id\": 1, \"requested\": 100, \"available\": 80}\n}",
+                            "name": "cumulative quantity exceeds stock"
+                        }
+                    ]
+                },
+                {
+                    "name": "Set cart item quantity",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cart\/items\/:productId",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cart\/items\/:productId",
+                            "variable": [
+                                {
+                                    "id": "productId",
+                                    "key": "productId",
+                                    "value": "1",
+                                    "description": "Product id of the existing line."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"quantity\":5}"
+                        },
+                        "description": "Set an existing cart line to an absolute quantity. Use DELETE to\nremove the item entirely; setting quantity to 0 is rejected."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Sepet g\u00fcncellendi.\",\n  \"data\": {\n    \"id\": 1,\n    \"items\": [{\"product_id\": 1, \"name\": \"T\u00fcrk Kahvesi 250g\", \"quantity\": 5, \"stock_available\": 80, \"unit_price\": \"95.00\", \"unit_currency\": \"TRY\", \"subtotal\": {\"TRY\": \"475.00\", \"USD\": \"10.51\", \"EUR\": \"8.97\"}}],\n    \"totals\": {\"TRY\": \"475.00\", \"USD\": \"10.51\", \"EUR\": \"8.97\"},\n    \"item_count\": 1,\n    \"total_quantity\": 5\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"The requested resource was not found.\",\n  \"data\": null,\n  \"code\": \"ERR_NOT_FOUND\"\n}",
+                            "name": "product not in cart"
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove cart item",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/cart\/items\/:productId",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/cart\/items\/:productId",
+                            "variable": [
+                                {
+                                    "id": "productId",
+                                    "key": "productId",
+                                    "value": "1",
+                                    "description": "Product id of the line to remove."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Drop a single line from the cart."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "{}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"The requested resource was not found.\",\n  \"data\": null,\n  \"code\": \"ERR_NOT_FOUND\"\n}",
+                            "name": "product not in cart"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Orders",
+            "description": "",
+            "item": [
+                {
+                    "name": "List my orders",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/orders",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Page size, 1\u2013100 (default 15).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/v1\/orders?per_page=15&page=1"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"per_page\":1,\"page\":22}"
+                        },
+                        "description": "Paginated list of the authenticated user's orders, newest first.\nOther users' orders are never visible."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 5,\n        \"status\": \"pending\",\n        \"total_amount\": \"350.00\",\n        \"currency\": \"TRY\",\n        \"totals\": {\"TRY\": \"350.00\", \"USD\": \"7.75\", \"EUR\": \"6.61\"},\n        \"items\": [\n          {\"product_id\": 1, \"product_name\": \"T\u00fcrk Kahvesi 250g\", \"unit_price\": \"95.00\", \"base_currency\": \"TRY\", \"quantity\": 2, \"line_total\": \"190.00\", \"line_total_display\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"}}\n        ],\n        \"created_at\": \"2026-05-04T20:00:00+00:00\",\n        \"updated_at\": \"2026-05-04T20:00:00+00:00\"\n      }\n    ],\n    \"pagination\": {\"current_page\": 1, \"last_page\": 1, \"per_page\": 15, \"total\": 1}\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create order from cart",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/orders",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/orders"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Atomic checkout. Reads the cart with FOR UPDATE locks, snapshots\neach line into order_items, decrements stock on the referenced\nproducts, persists the order with status PENDING, and clears the\ncart \u2014 all in one DB transaction. The order's `total_amount` is\nstored in TRY (canonical); display currencies are computed live\nvia the cached TCMB rates."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Sipari\u015f #5 olu\u015fturuldu.\",\n  \"data\": {\n    \"id\": 5,\n    \"status\": \"pending\",\n    \"total_amount\": \"350.00\",\n    \"currency\": \"TRY\",\n    \"totals\": {\"TRY\": \"350.00\", \"USD\": \"7.75\", \"EUR\": \"6.61\"},\n    \"items\": [{\"product_id\": 1, \"product_name\": \"T\u00fcrk Kahvesi 250g\", \"unit_price\": \"95.00\", \"base_currency\": \"TRY\", \"quantity\": 2, \"line_total\": \"190.00\", \"line_total_display\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"}}],\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:00:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Cannot create an order from an empty cart.\",\n  \"data\": null,\n  \"code\": \"ERR_EMPTY_CART\"\n}",
+                            "name": "empty cart"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Requested quantity exceeds the available stock.\",\n  \"data\": null,\n  \"code\": \"ERR_INSUFFICIENT_STOCK\",\n  \"details\": {\"product_id\": 1, \"requested\": 5, \"available\": 3}\n}",
+                            "name": "stock changed since cart-add"
+                        }
+                    ]
+                },
+                {
+                    "name": "Show order",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/orders\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/orders\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the order."
+                                },
+                                {
+                                    "id": "order",
+                                    "key": "order",
+                                    "value": "5",
+                                    "description": "Order id."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Fetch one order belonging to the authenticated user. Cross-user\nlookups return 404 (existence is deliberately undisclosed)."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": null,\n  \"data\": {\n    \"id\": 5,\n    \"status\": \"pending\",\n    \"total_amount\": \"350.00\",\n    \"currency\": \"TRY\",\n    \"totals\": {\"TRY\": \"350.00\", \"USD\": \"7.75\", \"EUR\": \"6.61\"},\n    \"items\": [{\"product_id\": 1, \"product_name\": \"T\u00fcrk Kahvesi 250g\", \"unit_price\": \"95.00\", \"base_currency\": \"TRY\", \"quantity\": 2, \"line_total\": \"190.00\", \"line_total_display\": {\"TRY\": \"190.00\", \"USD\": \"4.20\", \"EUR\": \"3.59\"}}],\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:00:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"The requested resource was not found.\",\n  \"data\": null,\n  \"code\": \"ERR_NOT_FOUND\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Cancel order",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/orders\/:order\/cancel",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/orders\/:order\/cancel",
+                            "variable": [
+                                {
+                                    "id": "order",
+                                    "key": "order",
+                                    "value": "5",
+                                    "description": "Order id."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Cancel a PENDING order owned by the authenticated user. Stock is\nreturned to every line's referenced product (lines whose product\nwas deleted are skipped \u2014 those stock units stay where they are).\nAlready-completed or already-cancelled orders return 422."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Sipari\u015f iptal edildi.\",\n  \"data\": {\n    \"id\": 5,\n    \"status\": \"cancelled\",\n    \"total_amount\": \"350.00\",\n    \"currency\": \"TRY\",\n    \"totals\": {\"TRY\": \"350.00\", \"USD\": \"7.75\", \"EUR\": \"6.61\"},\n    \"items\": [],\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:01:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Cannot cancel an order whose current status is completed.\",\n  \"data\": null,\n  \"code\": \"ERR_INVALID_ORDER_TRANSITION\",\n  \"details\": {\"current_status\": \"completed\", \"attempted_action\": \"cancel\"}\n}",
+                            "name": "terminal state"
+                        }
+                    ]
+                },
+                {
+                    "name": "Complete order (admin)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/orders\/:order\/complete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/orders\/:order\/complete",
+                            "variable": [
+                                {
+                                    "id": "order",
+                                    "key": "order",
+                                    "value": "5",
+                                    "description": "Order id."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Move a PENDING order to COMPLETED. Stock has already been\ndecremented at order-creation time so completion is purely a\nstatus mutation. Requires an admin bearer token."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"success\",\n  \"message\": \"Sipari\u015f tamamland\u0131.\",\n  \"data\": {\n    \"id\": 5,\n    \"status\": \"completed\",\n    \"total_amount\": \"350.00\",\n    \"currency\": \"TRY\",\n    \"totals\": {\"TRY\": \"350.00\", \"USD\": \"7.75\", \"EUR\": \"6.61\"},\n    \"items\": [],\n    \"created_at\": \"2026-05-04T20:00:00+00:00\",\n    \"updated_at\": \"2026-05-04T20:02:00+00:00\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Administrator privileges are required.\",\n  \"data\": null,\n  \"code\": \"ERR_UNAUTHORIZED\"\n}",
+                            "name": "not an admin"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"status\": \"error\",\n  \"message\": \"Cannot complete an order whose current status is cancelled.\",\n  \"data\": null,\n  \"code\": \"ERR_INVALID_ORDER_TRANSITION\",\n  \"details\": {\"current_status\": \"cancelled\", \"attempted_action\": \"complete\"}\n}",
+                            "name": "terminal state"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "Authorization",
+                "type": "string"
+            }
+        ]
+    }
+}

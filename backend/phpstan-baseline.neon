@@ -1,0 +1,378 @@
+parameters:
+	ignoreErrors:
+		-
+			# Laravel 12's default config/database.php references PHP 8.5+'s
+			# Pdo\Mysql::ATTR_SSL_CA behind a `PHP_VERSION_ID >= 80500` runtime
+			# guard. Platform PHP is pinned to 8.3 in composer.json so PHPStan
+			# cannot resolve the symbol, but the guard makes it unreachable at
+			# the targeted version.
+			message: '#^Access to constant ATTR_SSL_CA on an unknown class Pdo\\Mysql\.$#'
+			identifier: class.notFound
+			count: 2
+			path: config/database.php
+
+		-
+			message: '#^Call to function is_numeric\(\) with numeric\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: app/Actions/Order/CreateOrderFromCartAction.php
+
+		-
+			message: '#^Parameter \#1 \$string of function rtrim expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: config/filesystems.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/Feature/Api/V1/Auth/LoginTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Auth/LogoutTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Auth/LogoutTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Auth/MeTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Auth/MeTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Auth/RefreshTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Auth/RefreshTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Feature/Api/V1/Auth/RegisterTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 10
+			path: tests/Feature/Api/V1/Cart/AddToCartTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 11
+			path: tests/Feature/Api/V1/Cart/CartCacheTest.php
+
+		-
+			message: '#^Cannot access property \$items on App\\DTOs\\Cart\\CachedCart\|null\.$#'
+			identifier: property.nonObject
+			count: 5
+			path: tests/Feature/Api/V1/Cart/CartCacheTest.php
+
+		-
+			message: '#^Cannot access property \$userId on App\\DTOs\\Cart\\CachedCart\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/Feature/Api/V1/Cart/CartCacheTest.php
+
+		-
+			message: '#^Function authedHeaders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/Api/V1/Cart/CartCacheTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Cart/ClearCartTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Cart/RemoveCartItemTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Cart/ShowCartTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Cart/ShowCartTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/Feature/Api/V1/Cart/UpdateCartItemTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/ExceptionHandlingTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/ExceptionHandlingTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/Api/V1/HealthControllerTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/Feature/Api/V1/Orders/CancelOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/Api/V1/Orders/CompleteOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Orders/CreateOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: tests/Feature/Api/V1/Orders/CreateOrderTest.php
+
+		-
+			message: '#^Cannot access property \$line_total on App\\Models\\OrderItem\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/Feature/Api/V1/Orders/CreateOrderTest.php
+
+		-
+			message: '#^Cannot access property \$product_name on App\\Models\\OrderItem\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/Feature/Api/V1/Orders/CreateOrderTest.php
+
+		-
+			message: '#^Cannot access property \$unit_price on App\\Models\\OrderItem\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/Feature/Api/V1/Orders/CreateOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Orders/ListOrdersTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Orders/ListOrdersTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/Api/V1/Orders/ShowOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/Products/CreateProductTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Feature/Api/V1/Products/CreateProductTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/Api/V1/Products/DeleteProductTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: tests/Feature/Api/V1/Products/ListProductsTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Api/V1/Products/ShowProductTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/Feature/Api/V1/Products/UpdateProductTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Api/V1/RateLimitingTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/Feature/Api/V1/RateLimitingTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:artisan\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Console/FetchExchangeRatesCommandTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:mock\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Console/FetchExchangeRatesCommandTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:get\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/DocsAccessibilityTest.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\|Pest\\Support\\HigherOrderTapProxy\:\:markTestSkipped\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/DocsAccessibilityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:get\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/ExampleTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Http/Middleware/EnsureUserIsAdminTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Http/Middleware/EnsureUserIsAdminTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Http/Middleware/RequestIdTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Feature/Http/Middleware/RequestIdTest.php
+
+		-
+			message: '#^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage\:\:once\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Services/Currency/ExchangeRateServiceTest.php
+
+		-
+			message: '#^Parameter \#1 \$provider of function makeService expects App\\Contracts\\Services\\ExchangeRateProviderInterface, Mockery\\MockInterface given\.$#'
+			identifier: argument.type
+			count: 5
+			path: tests/Feature/Services/Currency/ExchangeRateServiceTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$fixture\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/Feature/Services/Currency/TcmbExchangeRateProviderTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$provider\.$#'
+			identifier: property.notFound
+			count: 7
+			path: tests/Feature/Services/Currency/TcmbExchangeRateProviderTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$url\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/Feature/Services/Currency/TcmbExchangeRateProviderTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:respondCreated\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Support/ApiResponseTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:respondError\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Support/ApiResponseTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:respondNoContent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/Support/ApiResponseTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:respondOk\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/Support/ApiResponseTest.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function expect$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/Feature/Support/ApiResponseTest.php
+
+		-
+			message: '#^Undefined variable\: \$this$#'
+			identifier: variable.undefined
+			count: 1
+			path: tests/Pest.php

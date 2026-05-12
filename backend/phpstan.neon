@@ -1,0 +1,29 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app/
+        - config/
+        - database/
+        - routes/
+        - tests/
+
+    level: 8
+
+    excludePaths:
+        - bootstrap/cache/*
+        - storage/*
+        - vendor/*
+
+    treatPhpDocTypesAsCertain: false
+
+    # Baseline entries for framework-default files (config/database.php's
+    # PHP 8.5-only `Pdo\Mysql::ATTR_SSL_CA` reference) only surface when
+    # PHPStan's platform PHP differs from the host runtime. Allow the
+    # entries to go unmatched so `composer qa` works both inside Docker
+    # (PHP 8.3, the constant access is unreachable) and on a host running
+    # PHP 8.5+ (where PHPStan still resolves at platform-8.3 from
+    # composer.json and reports the symbol).
+    reportUnmatchedIgnoredErrors: false

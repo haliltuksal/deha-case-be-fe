@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-9"?>
+<Tarih_Date Tarih="04.05.2026" Date="05/04/2026" Bulten_No="2026/85">
+  <Currency CrossOrder="0" Kod="USD" CurrencyCode="USD">
+    <Unit>1</Unit>
+    <Isim>ABD DOLARI</Isim>
+    <CurrencyName>US DOLLAR</CurrencyName>
+    <ForexBuying>32.4823</ForexBuying>
+    <ForexSelling>32.5407</ForexSelling>
+    <BanknoteBuying>32.4598</BanknoteBuying>
+    <BanknoteSelling>32.5895</BanknoteSelling>
+  </Currency>
+  <Currency CrossOrder="9" Kod="EUR" CurrencyCode="EUR">
+    <Unit>1</Unit>
+    <Isim>EURO</Isim>
+    <CurrencyName>EURO</CurrencyName>
+    <ForexBuying>34.8501</ForexBuying>
+    <ForexSelling>34.9203</ForexSelling>
+    <BanknoteBuying>34.8240</BanknoteBuying>
+    <BanknoteSelling>34.9622</BanknoteSelling>
+  </Currency>
+  <Currency CrossOrder="13" Kod="GBP" CurrencyCode="GBP">
+    <Unit>1</Unit>
+    <Isim>INGILIZ STERLINI</Isim>
+    <CurrencyName>POUND STERLING</CurrencyName>
+    <ForexBuying>40.5102</ForexBuying>
+    <ForexSelling>40.5994</ForexSelling>
+  </Currency>
+  <Currency CrossOrder="15" Kod="JPY" CurrencyCode="JPY">
+    <Unit>100</Unit>
+    <Isim>JAPON YENI</Isim>
+    <CurrencyName>JAPENESE YEN</CurrencyName>
+    <ForexBuying>21.0234</ForexBuying>
+    <ForexSelling>21.1453</ForexSelling>
+  </Currency>
+</Tarih_Date>

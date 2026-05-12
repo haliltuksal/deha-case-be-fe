@@ -1,0 +1,89 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "dehasoft/case-backend",
+    "type": "project",
+    "description": "Dehasoft case study — Laravel 12 e-commerce API with JWT auth, multi-currency, and BFF-friendly design.",
+    "keywords": ["laravel", "api", "jwt", "ecommerce", "dehasoft"],
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1",
+        "php-open-source-saver/jwt-auth": "^2.9"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "knuckleswtf/scribe": "^5.9",
+        "larastan/larastan": "^3.9",
+        "laravel/pint": "^1.24",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2",
+        "phpunit/phpunit": "^11.5.50"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "lint": "pint --test",
+        "format": "pint",
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "test": "pest --colors=always",
+        "test:coverage": "pest --coverage --colors=always",
+        "qa": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "lint": "Check code style with Laravel Pint (no changes)",
+        "format": "Apply Laravel Pint code style fixes",
+        "analyse": "Run PHPStan/Larastan static analysis at level 8",
+        "test": "Run the Pest test suite",
+        "test:coverage": "Run the Pest test suite with coverage report",
+        "qa": "Run lint + analyse + test (full QA gate)"
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "platform": {
+            "php": "8.3.0"
+        },
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
