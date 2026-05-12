@@ -11,8 +11,7 @@ interface CartItemRowProps {
 }
 
 export function CartItemRow({ item, currency }: CartItemRowProps) {
-  const lineTotal = item.line_totals[currency] ?? item.line_total;
-  const unitPrice = item.unit_prices[currency] ?? item.unit_price;
+  const lineTotal = item.subtotal[currency] ?? item.subtotal[item.unit_currency];
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -24,16 +23,16 @@ export function CartItemRow({ item, currency }: CartItemRowProps) {
           {item.name}
         </Link>
         <p className="text-sm text-muted-foreground">
-          Birim: {formatPrice(unitPrice, currency)}
+          Birim: {formatPrice(item.unit_price, item.unit_currency)}
           <span className="px-2 text-muted-foreground/50">·</span>
-          Stokta {item.available_stock} adet
+          Stokta {item.stock_available} adet
         </p>
       </div>
       <div className="flex items-center justify-between gap-4 sm:justify-end">
         <QuantityStepper
           productId={item.product_id}
           quantity={item.quantity}
-          max={item.available_stock}
+          max={item.stock_available}
         />
         <span className="min-w-[6rem] text-right text-base font-semibold tabular-nums">
           {formatPrice(lineTotal, currency)}

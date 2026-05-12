@@ -18,8 +18,9 @@ interface OrderDetailProps {
 }
 
 export function OrderDetail({ order, currency, actions }: OrderDetailProps) {
-  const total = order.totals[currency] ?? order.subtotal;
+  const total = order.totals[currency] ?? order.total_amount;
   const otherCurrencies = SUPPORTED_CURRENCIES.filter((c) => c !== currency);
+  const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <main className="container mx-auto max-w-4xl px-4 py-8">
@@ -33,7 +34,7 @@ export function OrderDetail({ order, currency, actions }: OrderDetailProps) {
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">Sipariş #{order.id}</h1>
           <p className="text-sm text-muted-foreground">
-            {formatDateTime(order.created_at)} · {order.item_count} ürün
+            {formatDateTime(order.created_at)} · {itemCount} ürün
           </p>
         </div>
         <OrderStatusBadge status={order.status} className="self-start text-sm" />
@@ -42,8 +43,12 @@ export function OrderDetail({ order, currency, actions }: OrderDetailProps) {
       <Card className="mt-6">
         <CardHeader className="text-base font-semibold">Sipariş Kalemleri</CardHeader>
         <CardContent className="pt-0">
-          {order.items.map((item) => (
-            <OrderItemRow key={item.id} item={item} currency={currency} />
+          {order.items.map((item, index) => (
+            <OrderItemRow
+              key={item.product_id ?? `removed-${index}`}
+              item={item}
+              currency={currency}
+            />
           ))}
         </CardContent>
       </Card>
@@ -62,7 +67,7 @@ export function OrderDetail({ order, currency, actions }: OrderDetailProps) {
               <div key={c} className="flex items-baseline gap-2">
                 <dt>{c}</dt>
                 <dd className="font-medium text-foreground">
-                  {formatPrice(order.totals[c] ?? order.subtotal, c)}
+                  {formatPrice(order.totals[c] ?? order.total_amount, c)}
                 </dd>
               </div>
             ))}

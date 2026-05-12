@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { SUPPORTED_CURRENCIES } from '@/types/currency';
 
 const decimalRegex = /^\d+(\.\d{1,2})?$/;
 
@@ -14,6 +15,9 @@ export const productInputSchema = z.object({
     .min(1, 'Açıklama girin.')
     .max(5000, 'Açıklama en fazla 5000 karakter olabilir.'),
   price: z.string().trim().regex(decimalRegex, 'Geçerli bir fiyat girin (örn. 99.99).'),
+  base_currency: z.enum(SUPPORTED_CURRENCIES, {
+    errorMap: () => ({ message: 'Geçerli bir para birimi seçin.' }),
+  }),
   stock: z.coerce
     .number({ invalid_type_error: 'Stok bir sayı olmalı.' })
     .int('Stok tam sayı olmalı.')

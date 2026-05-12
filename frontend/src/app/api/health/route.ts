@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { bffSuccess } from '@/server/bff/response';
 import { withErrorHandling } from '@/server/bff/route-helpers';
 import { laravel } from '@/server/http/laravel-client';
 
@@ -17,23 +17,25 @@ interface BackendHealth {
 /**
  * BFF health probe. Surfaces the backend's health envelope so a single
  * `curl /api/health` against the frontend tells you whether the storefront
- * can reach Laravel and its dependencies.
+ * can reach Laravel and its dependencies. Returns 503 with the same shape
+ * when any upstream dependency is down so an external load balancer can
+ * treat the BFF as unhealthy too.
  */
 export const GET = withErrorHandling(async () => {
   const upstream = await laravel<BackendHealth>('/api/v1/health');
   const overall = upstream.data.status;
-  const httpStatus = overall === 'ok' ? 200 : 503;
-  return NextResponse.json(
+  const isHealthy = overall === 'ok';
+
+  return bffSuccess(
     {
-      status: overall === 'ok' ? 'success' : 'error',
-      message: overall === 'ok' ? null : 'Backend services degraded.',
-      data: {
-        overall,
-        timestamp: upstream.data.timestamp,
-        bff: 'ok' as const,
-        backend: upstream.data.services,
-      },
+      overall,
+      timestamp: upstream.data.timestamp,
+      bff: 'ok' as const,
+      backend: upstream.data.services,
     },
-    { status: httpStatus },
+    {
+      status: isHealthy ? 200 : 503,
+      message: isHealthy ? null : 'Backend services degraded.',
+    },
   );
 });

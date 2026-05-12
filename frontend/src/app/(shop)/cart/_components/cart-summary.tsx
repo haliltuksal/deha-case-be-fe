@@ -12,7 +12,7 @@ interface CartSummaryProps {
 }
 
 export function CartSummary({ cart, currency }: CartSummaryProps) {
-  const headlineTotal = cart.totals[currency] ?? cart.subtotal;
+  const headlineTotal = cart.totals[currency] ?? cart.totals.TRY;
   const otherCurrencies = SUPPORTED_CURRENCIES.filter((c) => c !== currency);
 
   return (
@@ -33,7 +33,7 @@ export function CartSummary({ cart, currency }: CartSummaryProps) {
             <div key={c} className="flex items-baseline justify-between">
               <dt>{c}</dt>
               <dd className="font-medium text-foreground">
-                {formatPrice(cart.totals[c] ?? cart.subtotal, c)}
+                {formatPrice(cart.totals[c] ?? cart.totals.TRY, c)}
               </dd>
             </div>
           ))}

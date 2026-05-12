@@ -1,22 +1,24 @@
+import type { Currency } from './currency';
 import type { CurrencyAmounts } from './product';
 
 export interface CartItem {
-  id: number;
   product_id: number;
   name: string;
   quantity: number;
+  stock_available: number;
+  /** Stored as a decimal string in `unit_currency`. */
   unit_price: string;
-  line_total: string;
-  unit_prices: CurrencyAmounts;
-  line_totals: CurrencyAmounts;
-  available_stock: number;
+  unit_currency: Currency;
+  /** Per-line total rendered across every supported currency. */
+  subtotal: CurrencyAmounts;
 }
 
 export interface Cart {
   id: number;
   items: ReadonlyArray<CartItem>;
-  subtotal: string;
   totals: CurrencyAmounts;
+  /** Number of distinct line items in the cart. */
   item_count: number;
-  updated_at: string;
+  /** Sum of `item.quantity` across the cart. */
+  total_quantity: number;
 }

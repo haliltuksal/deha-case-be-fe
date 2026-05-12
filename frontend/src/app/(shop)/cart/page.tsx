@@ -46,7 +46,7 @@ export default async function CartPage() {
           </header>
           <div className="space-y-3">
             {cart.items.map((item) => (
-              <CartItemRow key={item.id} item={item} currency={currency} />
+              <CartItemRow key={item.product_id} item={item} currency={currency} />
             ))}
           </div>
         </section>

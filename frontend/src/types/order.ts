@@ -1,25 +1,28 @@
+import type { Currency } from './currency';
 import type { CurrencyAmounts } from './product';
 
 export const ORDER_STATUSES = ['pending', 'completed', 'cancelled'] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export interface OrderItem {
-  id: number;
+  /** May be null if the product has since been deleted (FK SET NULL). */
   product_id: number | null;
-  name: string;
-  quantity: number;
+  /** Snapshot of the product name at the time of checkout. */
+  product_name: string;
   unit_price: string;
+  base_currency: Currency;
+  quantity: number;
   line_total: string;
-  unit_prices: CurrencyAmounts;
-  line_totals: CurrencyAmounts;
+  line_total_display: CurrencyAmounts;
 }
 
 export interface Order {
   id: number;
   status: OrderStatus;
-  subtotal: string;
+  /** Canonical TRY total persisted on the order header. */
+  total_amount: string;
+  currency: Currency;
   totals: CurrencyAmounts;
-  item_count: number;
   items: ReadonlyArray<OrderItem>;
   created_at: string;
   updated_at: string;

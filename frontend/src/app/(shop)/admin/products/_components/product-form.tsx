@@ -16,10 +16,18 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { productInputSchema, type ProductFormValues } from '@/schemas/product';
+import { SUPPORTED_CURRENCIES } from '@/types/currency';
 
-const FIELDS = ['name', 'description', 'price', 'stock'] as const;
+const FIELDS = ['name', 'description', 'price', 'base_currency', 'stock'] as const;
 
 interface ProductFormProps {
   productId?: number;
@@ -36,6 +44,7 @@ export function ProductForm({ productId, initialValues }: ProductFormProps) {
       name: initialValues?.name ?? '',
       description: initialValues?.description ?? '',
       price: initialValues?.price ?? '',
+      base_currency: initialValues?.base_currency ?? 'TRY',
       stock: initialValues?.stock ?? 0,
     },
   });
@@ -87,24 +96,51 @@ export function ProductForm({ productId, initialValues }: ProductFormProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fiyat (TRY)</FormLabel>
-              <FormControl>
-                <Input
-                  inputMode="decimal"
-                  pattern="\d+(\.\d{1,2})?"
-                  placeholder="99.99"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid gap-4 sm:grid-cols-[1fr_140px]">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fiyat</FormLabel>
+                <FormControl>
+                  <Input
+                    inputMode="decimal"
+                    pattern="\d+(\.\d{1,2})?"
+                    placeholder="99.99"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="base_currency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Para Birimi</FormLabel>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {SUPPORTED_CURRENCIES.map((currency) => (
+                      <SelectItem key={currency} value={currency}>
+                        {currency}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}

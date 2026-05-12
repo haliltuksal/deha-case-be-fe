@@ -10,7 +10,7 @@ interface CheckoutSummaryProps {
 }
 
 export function CheckoutSummary({ cart, currency }: CheckoutSummaryProps) {
-  const headlineTotal = cart.totals[currency] ?? cart.subtotal;
+  const headlineTotal = cart.totals[currency] ?? cart.totals.TRY;
 
   return (
     <Card>
@@ -20,13 +20,16 @@ export function CheckoutSummary({ cart, currency }: CheckoutSummaryProps) {
       <CardContent className="space-y-4">
         <ul className="space-y-2">
           {cart.items.map((item) => (
-            <li key={item.id} className="flex items-baseline justify-between gap-3">
+            <li key={item.product_id} className="flex items-baseline justify-between gap-3">
               <div className="min-w-0">
                 <p className="line-clamp-1 text-sm font-medium">{item.name}</p>
                 <p className="text-xs text-muted-foreground">{item.quantity} adet</p>
               </div>
               <span className="text-sm font-medium tabular-nums">
-                {formatPrice(item.line_totals[currency] ?? item.line_total, currency)}
+                {formatPrice(
+                  item.subtotal[currency] ?? item.subtotal[item.unit_currency],
+                  currency,
+                )}
               </span>
             </li>
           ))}
@@ -46,7 +49,7 @@ export function CheckoutSummary({ cart, currency }: CheckoutSummaryProps) {
             <div key={c} className="flex items-baseline gap-1.5">
               <dt>{c}</dt>
               <dd className="font-medium text-foreground">
-                {formatPrice(cart.totals[c] ?? cart.subtotal, c)}
+                {formatPrice(cart.totals[c] ?? cart.totals.TRY, c)}
               </dd>
             </div>
           ))}

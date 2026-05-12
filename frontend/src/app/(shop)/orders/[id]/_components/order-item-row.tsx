@@ -9,8 +9,7 @@ interface OrderItemRowProps {
 }
 
 export function OrderItemRow({ item, currency }: OrderItemRowProps) {
-  const lineTotal = item.line_totals[currency] ?? item.line_total;
-  const unitPrice = item.unit_prices[currency] ?? item.unit_price;
+  const lineTotal = item.line_total_display[currency] ?? item.line_total;
   const productLink = item.product_id !== null ? `/products/${item.product_id}` : null;
 
   return (
@@ -18,15 +17,15 @@ export function OrderItemRow({ item, currency }: OrderItemRowProps) {
       <div className="min-w-0 flex-1 space-y-1">
         {productLink ? (
           <Link href={productLink} className="line-clamp-1 text-base font-medium hover:underline">
-            {item.name}
+            {item.product_name}
           </Link>
         ) : (
           <span className="line-clamp-1 text-base font-medium italic text-muted-foreground">
-            {item.name}
+            {item.product_name}
           </span>
         )}
         <p className="text-sm text-muted-foreground">
-          {item.quantity} adet · Birim {formatPrice(unitPrice, currency)}
+          {item.quantity} adet · Birim {formatPrice(item.unit_price, item.base_currency)}
           {productLink === null && (
             <span className="ml-2 text-xs">(ürün artık katalogda değil)</span>
           )}

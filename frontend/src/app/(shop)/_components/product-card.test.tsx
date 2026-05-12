@@ -16,6 +16,7 @@ const baseProduct: Product = {
   name: 'Bluetooth Kulaklık',
   description: 'Aktif gürültü engelleme ve 30 saat pil ömrü.',
   price: '299.99',
+  base_currency: 'TRY',
   stock: 12,
   prices: { TRY: '299.99', USD: '8.99', EUR: '7.50' },
   created_at: '2026-05-05T10:00:00.000Z',

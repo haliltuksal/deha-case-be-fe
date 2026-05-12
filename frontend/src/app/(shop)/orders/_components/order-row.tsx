@@ -14,7 +14,8 @@ interface OrderRowProps {
 }
 
 export function OrderRow({ order, currency }: OrderRowProps) {
-  const total = order.totals[currency] ?? order.subtotal;
+  const total = order.totals[currency] ?? order.total_amount;
+  const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Card className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -24,7 +25,7 @@ export function OrderRow({ order, currency }: OrderRowProps) {
           <OrderStatusBadge status={order.status} />
         </div>
         <p className="text-sm text-muted-foreground">
-          {formatDateTime(order.created_at)} · {order.item_count} ürün
+          {formatDateTime(order.created_at)} · {itemCount} ürün
         </p>
       </div>
       <div className="flex items-center justify-between gap-4 sm:justify-end">
