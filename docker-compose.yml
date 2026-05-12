@@ -1,0 +1,114 @@
+name: dehasoft
+
+# Top-level orchestrator that boots backend + frontend together on a shared
+# bridge network. The per-project compose files in `backend/` and `frontend/`
+# are still useful for solo development; this one is what a reviewer runs to
+# see the whole stack with a single command.
+
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: docker/php/Dockerfile
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    container_name: dehasoft-app
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      PHP_IDE_CONFIG: "serverName=dehasoft"
+    networks:
+      - dehasoft
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: dehasoft-nginx
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - dehasoft
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: dehasoft-mysql
+    command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-dehasoft}
+      MYSQL_USER: ${DB_USERNAME:-dehasoft}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "${DB_FORWARD_PORT:-3307}:3306"
+    networks:
+      - dehasoft
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: dehasoft-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "${REDIS_FORWARD_PORT:-6380}:6379"
+    networks:
+      - dehasoft
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    container_name: dehasoft-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: development
+      # The BFF reaches the backend over the shared docker network, so the
+      # frontend container never needs `host.docker.internal` and works the
+      # same on macOS, Linux, and CI.
+      LARAVEL_API_URL: http://nginx
+      COOKIE_NAME: ${COOKIE_NAME:-deha_token}
+      REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-15000}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - dehasoft
+    depends_on:
+      - nginx
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  dehasoft:
+    driver: bridge
