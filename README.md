@@ -4,7 +4,7 @@ Tek bir Docker stack ile Next.js storefront (BFF proxy dahil) ve Laravel API'yi
 birlikte ayağa kaldıran üst dizin.
 
 ```
-dehasoft-case/
+deha-case-be-fe/
 ├── backend/             Laravel 12 API (JWT, multi-currency, transactional orders)
 ├── frontend/            Next.js 15 storefront + /api/* BFF proxy
 ├── docker-compose.yml   üstten her şeyi tek seferde başlatır
@@ -16,7 +16,8 @@ dehasoft-case/
 Gereken: Docker (Desktop veya Engine 20.10+).
 
 ```bash
-cd dehasoft-case
+git clone git@github.com:haliltuksal/deha-case-be-fe.git
+cd deha-case-be-fe
 docker compose up -d
 ```
 
