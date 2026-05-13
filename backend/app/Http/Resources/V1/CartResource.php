@@ -10,7 +10,7 @@ use App\Services\Currency\CurrencyConverter;
 use Illuminate\Http\Request;
 
 /**
- * @mixin Cart
+ * @extends BaseResource<Cart>
  */
 final class CartResource extends BaseResource
 {
@@ -24,9 +24,6 @@ final class CartResource extends BaseResource
 
         $totals = ['TRY' => '0.00', 'USD' => '0.00', 'EUR' => '0.00'];
         $totalQuantity = 0;
-        // Map of cart_item id => per-currency subtotal, computed once and
-        // shared with each CartItemResource so the conversion does not
-        // re-run when each child renders.
         $subtotalsByItemId = [];
 
         foreach ($items as $item) {

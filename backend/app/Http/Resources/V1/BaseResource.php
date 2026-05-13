@@ -8,22 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Common parent for every v1 API resource. Replaces Laravel's default
- * `{ data: ... }` shape with the canonical envelope used across the API:
+ * @template TResource of object
  *
- *   {
- *     "status":  "success",
- *     "message": null | "...",
- *     "data":    { ...resource fields... }
- *   }
- *
- * Subclasses only implement `toArray()`; the envelope and any optional
- * action message live here so every endpoint speaks the same shape.
- *
- * Pass an action message via `Resource::make($model)->additional(['message' => '...'])`.
- *
- * Status code defaults to 200; pass a different one via
- * `Resource::make($model)->additional(['status_code' => 201])`.
+ * @mixin TResource
  */
 abstract class BaseResource extends JsonResource
 {

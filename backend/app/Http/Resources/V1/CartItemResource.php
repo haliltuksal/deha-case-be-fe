@@ -10,7 +10,7 @@ use App\Services\Currency\CurrencyConverter;
 use Illuminate\Http\Request;
 
 /**
- * @mixin CartItem
+ * @extends BaseResource<CartItem>
  */
 final class CartItemResource extends BaseResource
 {

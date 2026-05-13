@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\AssignRequestId;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\LogApiRequest;
 use App\Support\Http\ApiException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -25,13 +26,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-/**
- * Build the canonical error envelope. `status: 'error'` and `data: null`
- * sit alongside the existing `code`, `message`, `errors`, `details` keys
- * so the shape mirrors the success envelope from BaseResource.
- *
- * @param array<string, mixed> $extras
- */
 $apiError = static function (
     int $status,
     string $code,
@@ -46,14 +40,6 @@ $apiError = static function (
     ] + $extras, $status);
 };
 
-/**
- * Single-source API exception renderer. Inspecting the path once at the top
- * keeps the framework's HTML / web error pages intact for non-API routes
- * (so artisan-rendered web pages still work) while every `/api/*` request
- * gets a canonical JSON envelope. Path matching is the explicit boundary;
- * we deliberately do not trust `$request->expectsJson()` (which depends on
- * the client sending `Accept: application/json`) for this decision.
- */
 $renderApiException = static function (Throwable $e, Request $request) use ($apiError): ?JsonResponse {
     if (! $request->is('api/*')) {
         return null;
@@ -97,10 +83,6 @@ $renderApiException = static function (Throwable $e, Request $request) use ($api
     }
 
     if ($e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException) {
-        // Laravel's prepareException() converts an untyped AuthorizationException
-        // into an AccessDeniedHttpException whose message is the literal
-        // "Forbidden". Walk the previous-exception chain to recover the
-        // original message so the client sees what the policy actually said.
         $message = $e->getMessage();
         $previous = $e->getPrevious();
         if ($e instanceof AccessDeniedHttpException
@@ -122,9 +104,6 @@ $renderApiException = static function (Throwable $e, Request $request) use ($api
     }
 
     if ($e instanceof NotFoundHttpException) {
-        // Laravel's prepareException() folds ModelNotFoundException into
-        // NotFoundHttpException — distinguish the two cases through the
-        // previous-exception chain so the response message is accurate.
         $previous = $e->getPrevious();
         $message = $previous instanceof ModelNotFoundException
             ? 'The requested resource was not found.'
@@ -158,12 +137,10 @@ $renderApiException = static function (Throwable $e, Request $request) use ($api
     }
 
     $extras = [];
-    if (config('app.debug') === true) {
+    if (app()->environment() !== 'production' && config('app.debug') === true) {
         $extras['debug'] = [
             'exception' => $e::class,
             'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
         ];
     }
 
@@ -186,27 +163,18 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
             AssignRequestId::class,
+            LogApiRequest::class,
         ]);
 
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
 
-        // Disable the redirect-to-login fallback that the Authenticate
-        // middleware otherwise performs whenever a guest hits a guarded
-        // route without `Accept: application/json`. Returning null forces
-        // an AuthenticationException (rendered as ERR_UNAUTHENTICATED) for
-        // every `/api/*` request regardless of headers, which is the same
-        // header-independent boundary the JSON renderer relies on.
         $middleware->redirectGuestsTo(
             static fn (Request $request): ?string => $request->is('api/*') ? null : route('login'),
         );
     })
     ->withExceptions(function (Exceptions $exceptions) use ($renderApiException): void {
-        // Force JSON error rendering for every API path. The path is the
-        // explicit boundary; we deliberately do not fall back to
-        // `$request->expectsJson()` because that depends on a client-supplied
-        // Accept header and would silently revert to HTML on stripped requests.
         $exceptions->shouldRenderJsonWhen(
             static fn (Request $request, Throwable $e): bool => $request->is('api/*'),
         );

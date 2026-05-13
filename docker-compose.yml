@@ -1,10 +1,5 @@
 name: dehasoft
 
-# Top-level orchestrator that boots backend + frontend together on a shared
-# bridge network. The per-project compose files in `backend/` and `frontend/`
-# are still useful for solo development; this one is what a reviewer runs to
-# see the whole stack with a single command.
-
 services:
   app:
     build:
@@ -65,7 +60,12 @@ services:
   redis:
     image: redis:7-alpine
     container_name: dehasoft-redis
-    command: ["redis-server", "--appendonly", "yes"]
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
     volumes:
       - redis-data:/data
     ports:
@@ -73,7 +73,7 @@ services:
     networks:
       - dehasoft
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -87,9 +87,6 @@ services:
       - "${FRONTEND_PORT:-3000}:3000"
     environment:
       NODE_ENV: development
-      # The BFF reaches the backend over the shared docker network, so the
-      # frontend container never needs `host.docker.internal` and works the
-      # same on macOS, Linux, and CI.
       LARAVEL_API_URL: http://nginx
       COOKIE_NAME: ${COOKIE_NAME:-deha_token}
       REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-15000}

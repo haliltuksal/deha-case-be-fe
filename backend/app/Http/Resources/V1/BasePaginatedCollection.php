@@ -8,27 +8,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-/**
- * Common parent for every paginated v1 API collection. Emits the canonical
- * envelope shape with pagination metadata folded into the data payload:
- *
- *   {
- *     "status":  "success",
- *     "message": null,
- *     "data": {
- *       "items": [ ...resource fields per item... ],
- *       "pagination": {
- *         "current_page": 1,
- *         "last_page": 5,
- *         "per_page": 12,
- *         "total": 50
- *       }
- *     }
- *   }
- *
- * Subclasses only need to declare `public $collects = SomeResource::class;`
- * to bind a per-item resource transformer.
- */
 abstract class BasePaginatedCollection extends ResourceCollection
 {
     public function toResponse($request): JsonResponse

@@ -10,7 +10,7 @@ use App\Services\Currency\CurrencyConverter;
 use Illuminate\Http\Request;
 
 /**
- * @mixin Product
+ * @extends BaseResource<Product>
  */
 final class ProductResource extends BaseResource
 {

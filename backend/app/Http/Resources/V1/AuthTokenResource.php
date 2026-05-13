@@ -8,6 +8,8 @@ use App\DTOs\Auth\AuthenticatedUser;
 use Illuminate\Http\Request;
 
 /**
+ * @extends BaseResource<AuthenticatedUser>
+ *
  * @property AuthenticatedUser $resource
  */
 final class AuthTokenResource extends BaseResource

@@ -20,28 +20,27 @@ use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->bindJwtGuard();
         $this->bindCurrencyServices();
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        $this->assertProductionSafety();
         $this->configureRateLimiters();
     }
 
-    /**
-     * Resolve the api guard (JWT) whenever a class type-hints JWTGuard, so
-     * actions and services can depend on the concrete guard without
-     * touching the auth() facade.
-     */
+    private function assertProductionSafety(): void
+    {
+        if ($this->app->environment('production') && config('app.debug') === true) {
+            throw new \RuntimeException(
+                'APP_DEBUG must be false in production. Refusing to boot with debug enabled.',
+            );
+        }
+    }
+
     private function bindJwtGuard(): void
     {
         $this->app->bind(JWTGuard::class, function ($app): JWTGuard {
@@ -54,12 +53,6 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Wire the currency strategy: any consumer that depends on the
-     * provider contract gets the TCMB implementation, fed by config.
-     * The ExchangeRateService gets a Redis-backed cache repository and
-     * the configured TTL.
-     */
     private function bindCurrencyServices(): void
     {
         $this->app->bind(ExchangeRateProviderInterface::class, function ($app): TcmbExchangeRateProvider {
@@ -83,22 +76,9 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        // CurrencyConverter is stateless (depends only on the ExchangeRateService
-        // singleton above), so a single instance serves every resource within a
-        // request rather than being rebuilt through the container on each
-        // iteration of a paginated list.
         $this->app->singleton(CurrencyConverter::class);
     }
 
-    /**
-     * Two named rate limiters back the throttle middleware:
-     *
-     *  - "api"  — the default for any authenticated endpoint, per-user
-     *             when authenticated and per-IP otherwise. 60/min.
-     *  - "auth" — the unauthenticated login/register/refresh surface,
-     *             keyed strictly by IP. 5/min keeps brute-force pressure
-     *             on credential endpoints minimal without ruining UX.
-     */
     private function configureRateLimiters(): void
     {
         RateLimiter::for('api', static function (Request $request): Limit {

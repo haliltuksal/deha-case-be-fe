@@ -10,7 +10,7 @@ use App\Services\Currency\CurrencyConverter;
 use Illuminate\Http\Request;
 
 /**
- * @mixin Order
+ * @extends BaseResource<Order>
  */
 final class OrderResource extends BaseResource
 {

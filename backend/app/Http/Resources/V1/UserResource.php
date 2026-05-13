@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
- * @mixin User
+ * @extends BaseResource<User>
  */
 final class UserResource extends BaseResource
 {
