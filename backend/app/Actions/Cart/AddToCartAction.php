@@ -27,9 +27,7 @@ final readonly class AddToCartAction
      */
     public function execute(User $user, AddToCartData $data): Cart
     {
-        $lock = $this->cache->lock($user->id);
-
-        return $lock->block(5, fn (): Cart => DB::transaction(function () use ($user, $data): Cart {
+        return DB::transaction(function () use ($user, $data): Cart {
             $product = $this->products->findOrFail($data->productId);
             $cart = $this->carts->findOrCreateForUser($user);
             $existing = $this->carts->findItem($cart, $product->id);
@@ -48,12 +46,9 @@ final readonly class AddToCartAction
 
             $cart = $this->carts->loadItemsWithProducts($cart);
 
-            // Defer the cache write to the outermost transaction commit so a
-            // rollback (or a parent-transaction rollback if this action ever
-            // nests inside one) cannot leave Redis ahead of MySQL.
             DB::afterCommit(fn () => $this->cache->put(CachedCart::fromCart($cart)));
 
             return $cart;
-        }));
+        });
     }
 }

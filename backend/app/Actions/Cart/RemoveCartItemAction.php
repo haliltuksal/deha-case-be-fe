@@ -25,9 +25,7 @@ final readonly class RemoveCartItemAction
      */
     public function execute(User $user, int $productId): void
     {
-        $lock = $this->cache->lock($user->id);
-
-        $lock->block(5, fn () => DB::transaction(function () use ($user, $productId): void {
+        DB::transaction(function () use ($user, $productId): void {
             $cart = $this->carts->findOrCreateForUser($user);
             $item = $this->carts->findItem($cart, $productId);
 
@@ -40,6 +38,6 @@ final readonly class RemoveCartItemAction
             $cart = $this->carts->loadItemsWithProducts($cart);
 
             DB::afterCommit(fn () => $this->cache->put(CachedCart::fromCart($cart)));
-        }));
+        });
     }
 }

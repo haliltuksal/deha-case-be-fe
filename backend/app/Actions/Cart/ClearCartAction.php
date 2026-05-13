@@ -17,12 +17,8 @@ final readonly class ClearCartAction
 
     public function execute(User $user): void
     {
-        $lock = $this->cache->lock($user->id);
-
-        $lock->block(5, function () use ($user): void {
-            $cart = $this->carts->findOrCreateForUser($user);
-            $this->carts->clearItems($cart);
-            $this->cache->forget($user->id);
-        });
+        $cart = $this->carts->findOrCreateForUser($user);
+        $this->carts->clearItems($cart);
+        $this->cache->forget($user->id);
     }
 }

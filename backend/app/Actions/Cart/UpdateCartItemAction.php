@@ -30,9 +30,7 @@ final readonly class UpdateCartItemAction
      */
     public function execute(User $user, UpdateCartItemData $data): Cart
     {
-        $lock = $this->cache->lock($user->id);
-
-        return $lock->block(5, fn (): Cart => DB::transaction(function () use ($user, $data): Cart {
+        return DB::transaction(function () use ($user, $data): Cart {
             $cart = $this->carts->findOrCreateForUser($user);
             $item = $this->carts->findItem($cart, $data->productId);
 
@@ -57,6 +55,6 @@ final readonly class UpdateCartItemAction
             DB::afterCommit(fn () => $this->cache->put(CachedCart::fromCart($cart)));
 
             return $cart;
-        }));
+        });
     }
 }
