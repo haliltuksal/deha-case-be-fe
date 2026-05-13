@@ -125,7 +125,11 @@ Varsayılan portlar host'ta dolu ise üst dizinde env değişkeni ile override e
 APP_PORT=8081 FRONTEND_PORT=3001 docker compose up -d
 ```
 
-Desteklenen değişkenler: `APP_PORT`, `FRONTEND_PORT`, `DB_FORWARD_PORT`, `REDIS_FORWARD_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_ROOT_PASSWORD`, `COOKIE_NAME`, `REQUEST_TIMEOUT_MS`.
+Desteklenen değişkenler: `APP_PORT`, `FRONTEND_PORT`, `DB_FORWARD_PORT`, `REDIS_FORWARD_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_ROOT_PASSWORD`, `REDIS_PASSWORD`, `COOKIE_NAME`, `REQUEST_TIMEOUT_MS`.
+
+> Redis boot anında `--requirepass` ile ayağa kalkar. Local kolaylık için
+> `REDIS_PASSWORD`'ün varsayılan değeri `change-me-redis-password`; gerçek
+> bir kuruluma çıkmadan önce mutlaka ortam değişkeniyle override et.
 
 ## Mimari özet
 

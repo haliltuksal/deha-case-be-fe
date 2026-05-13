@@ -65,7 +65,7 @@ services:
       - --appendonly
       - "yes"
       - --requirepass
-      - ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env}
+      - ${REDIS_PASSWORD:-change-me-redis-password}
     volumes:
       - redis-data:/data
     ports:
@@ -73,7 +73,7 @@ services:
     networks:
       - dehasoft
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a \"${REDIS_PASSWORD:-change-me-redis-password}\" ping"]
       interval: 5s
       timeout: 3s
       retries: 10
