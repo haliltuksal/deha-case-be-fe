@@ -32,11 +32,6 @@ function loadEnv(): AppEnv {
   return cachedEnv;
 }
 
-/**
- * Lazy validating proxy. The schema runs the first time any property is read
- * (i.e. on real request handling), so `next build` does not crash when the
- * runtime variables are not yet present in the build environment.
- */
 export const env = new Proxy({} as AppEnv, {
   get(_target, property) {
     const loaded = loadEnv();

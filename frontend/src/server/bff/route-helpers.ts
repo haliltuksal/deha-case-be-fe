@@ -30,10 +30,6 @@ function withRequestContext(
   return runInRequestContext({ requestId }, fn);
 }
 
-/**
- * Wraps a route handler with the canonical error translator. Use for public
- * endpoints (login, register, public products list).
- */
 export function withErrorHandling<TParams = Record<string, string>>(
   handler: RouteHandler<TParams>,
 ): RouteHandler<TParams> {
@@ -47,10 +43,6 @@ export function withErrorHandling<TParams = Record<string, string>>(
     });
 }
 
-/**
- * Wraps a route handler with authentication enforcement. The resolved user is
- * passed into the handler context to avoid a second lookup.
- */
 export function withAuth<TParams = Record<string, string>>(
   handler: AuthenticatedRouteHandler<TParams>,
 ): RouteHandler<TParams> {
@@ -70,11 +62,6 @@ export type TokenRouteHandler<TParams> = (
   context: RouteContext<TParams> & { token: string },
 ) => Promise<NextResponse> | NextResponse;
 
-/**
- * Wraps a route handler that only needs the bearer token forwarded to Laravel
- * (cart and order mutations). Skips the extra `/auth/me` round-trip that
- * `withAuth` performs because the upstream call validates the token anyway.
- */
 export function withToken<TParams = Record<string, string>>(
   handler: TokenRouteHandler<TParams>,
 ): RouteHandler<TParams> {
@@ -97,11 +84,6 @@ export type AdminTokenRouteHandler<TParams> = (
   context: RouteContext<TParams> & { user: User; token: string },
 ) => Promise<NextResponse> | NextResponse;
 
-/**
- * Wraps a route handler with admin enforcement and bearer-token forwarding.
- * Used by privileged mutations (admin product CRUD, order completion) that
- * need to assert is_admin AND relay the JWT to Laravel.
- */
 export function withAdminToken<TParams = Record<string, string>>(
   handler: AdminTokenRouteHandler<TParams>,
 ): RouteHandler<TParams> {

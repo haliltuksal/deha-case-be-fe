@@ -25,11 +25,6 @@ const ERROR_MESSAGES: Record<ApiErrorCode, string> = {
   ERR_INTERNAL: FALLBACK_MESSAGE,
 };
 
-/**
- * Resolves a user-facing message for a given backend error code. When the
- * code is unrecognised the optional `fallback` is used, otherwise a generic
- * Turkish message is returned.
- */
 export function getErrorMessage(code: string | undefined, fallback?: string): string {
   if (code && code in ERROR_MESSAGES) {
     return ERROR_MESSAGES[code as ApiErrorCode];

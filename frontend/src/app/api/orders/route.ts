@@ -16,8 +16,6 @@ export const GET = withToken(async (request, { token }) => {
   const perPage = parsePositiveInt(url.searchParams.get('per_page'));
   if (perPage !== null) query.perPage = perPage;
 
-  // Repository returns the full ApiPaginated envelope from Laravel; forward
-  // it as-is so the BFF surface mirrors the upstream shape.
   const result = await orderRepository.list(token, query);
   return NextResponse.json(result);
 });

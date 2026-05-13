@@ -9,15 +9,11 @@ import { getErrorMessage } from '@/lib/errors/error-messages';
 export interface UseApiMutationOptions<T> {
   successMessage?: string | ((result: T) => string);
   errorFallback?: string;
-  /** Defaults to true. */
   refreshOnSuccess?: boolean;
   navigateOnSuccess?: string | ((result: T) => string);
-  /** Defaults to `push`. */
   navigateMethod?: 'push' | 'replace';
   onSuccess?: (result: T) => void;
-  /** Return `true` to suppress the default `toast.error` mapping. */
   onApiError?: (error: ApiError) => boolean | void;
-  /** Skip the toast on any error. The action's own catch still runs. */
   silentError?: boolean;
 }
 

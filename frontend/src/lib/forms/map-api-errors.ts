@@ -3,11 +3,6 @@ import { toast } from 'sonner';
 import { isApiError } from '@/lib/errors/api-error';
 import { getErrorMessage } from '@/lib/errors/error-messages';
 
-/**
- * Maps the `errors` map in an `ERR_VALIDATION` ApiError onto react-hook-form
- * field errors. Returns `true` when at least one field error was applied so
- * callers can decide whether to fall back to a global toast.
- */
 export function applyApiFieldErrors<TValues extends FieldValues>(
   error: unknown,
   form: UseFormReturn<TValues>,
@@ -27,10 +22,6 @@ export function applyApiFieldErrors<TValues extends FieldValues>(
   return applied;
 }
 
-/**
- * Standard form submission error handler: tries to apply Zod-style field
- * errors, otherwise surfaces a sonner toast with a translated message.
- */
 export function handleFormSubmitError<TValues extends FieldValues>(
   error: unknown,
   form: UseFormReturn<TValues>,

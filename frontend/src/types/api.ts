@@ -1,20 +1,9 @@
-/**
- * Canonical API envelope. Every backend response uses this shape.
- *
- *   { status: 'success', message: string|null, data: T }
- *   { status: 'error',   message: string,      data: null, code, errors?, details? }
- */
 export interface ApiSuccess<T> {
   status: 'success';
   message: string | null;
   data: T;
 }
 
-/**
- * Paginated lists place the array under `data.items` and pagination
- * metadata under `data.pagination`, both wrapped in the same envelope
- * as a single resource response.
- */
 export interface ApiPaginated<T> {
   status: 'success';
   message: string | null;

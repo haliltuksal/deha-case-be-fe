@@ -7,14 +7,6 @@ interface ApiClientInit extends Omit<RequestInit, 'body'> {
   body?: BodyInit | null;
 }
 
-/**
- * Browser-side wrapper around `fetch` that targets the Next.js BFF route
- * handlers under `/api/*`. The session cookie is included automatically
- * (same-origin) so callers never deal with the bearer token.
- *
- * Rejects with an `ApiError` on non-2xx responses so UI code can branch
- * on the canonical error codes coming from the backend.
- */
 export async function apiClient<T>(path: string, init: ApiClientInit = {}): Promise<T> {
   const { json, body, headers, ...rest } = init;
 
@@ -61,7 +53,7 @@ async function readErrorBody(response: Response): Promise<ApiErrorBody> {
       return parsed as ApiErrorBody;
     }
   } catch {
-    // fall through
+    /* fall through */
   }
   return {
     status: 'error',

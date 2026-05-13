@@ -14,13 +14,6 @@ interface BackendHealth {
   };
 }
 
-/**
- * BFF health probe. Surfaces the backend's health envelope so a single
- * `curl /api/health` against the frontend tells you whether the storefront
- * can reach Laravel and its dependencies. Returns 503 with the same shape
- * when any upstream dependency is down so an external load balancer can
- * treat the BFF as unhealthy too.
- */
 export const GET = withErrorHandling(async () => {
   const upstream = await laravel<BackendHealth>('/api/v1/health');
   const overall = upstream.data.status;

@@ -5,12 +5,6 @@ import { HttpError, isHttpError } from '@/server/http/http-error';
 import { getRequestContext } from '@/server/http/request-context';
 import { REQUEST_ID_HEADER } from '@/server/http/request-id';
 
-/**
- * Translates any error caught inside a BFF route handler into a NextResponse
- * with the canonical error envelope. The frontend therefore sees the same
- * shape regardless of whether the failure originated upstream (Laravel) or
- * inside the proxy layer.
- */
 export function toNextResponse(error: unknown): NextResponse<ApiErrorBody> {
   if (isHttpError(error)) {
     return buildResponse(error.status === 0 ? 502 : error.status, error.body, error.requestId);

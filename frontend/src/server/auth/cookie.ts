@@ -6,7 +6,6 @@ import { env } from '@/config/env';
 const SAFETY_MARGIN_SECONDS = 30;
 
 export interface AuthCookieOptions {
-  /** Token lifetime in seconds (matches Laravel `expires_in`). */
   expiresInSeconds: number;
 }
 
@@ -23,10 +22,6 @@ function baseCookieOptions(): Pick<
   };
 }
 
-/**
- * Stores the bearer token in an HttpOnly cookie. The cookie is invisible to
- * client-side JavaScript and is the only place the token lives in the browser.
- */
 export async function setAuthCookie(token: string, options: AuthCookieOptions): Promise<void> {
   const store = await cookies();
   const maxAge = Math.max(60, options.expiresInSeconds - SAFETY_MARGIN_SECONDS);

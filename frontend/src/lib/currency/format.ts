@@ -22,12 +22,6 @@ function getFormatter(currency: Currency): Intl.NumberFormat {
   return formatter;
 }
 
-/**
- * Formats a monetary amount expressed as a decimal string in the given
- * currency. The backend stores prices as decimal strings to avoid IEEE-754
- * drift; we only convert to a number for display purposes here, and use
- * `Intl.NumberFormat` so each currency follows its native digit grouping.
- */
 export function formatPrice(amount: string | number, currency: Currency): string {
   const numeric = typeof amount === 'number' ? amount : Number.parseFloat(amount);
   if (!Number.isFinite(numeric)) {

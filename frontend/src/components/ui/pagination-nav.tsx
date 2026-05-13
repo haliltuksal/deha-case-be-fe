@@ -5,7 +5,6 @@ import type { Pagination } from '@/types/api';
 
 interface PaginationNavProps {
   pagination: Pagination;
-  /** Builds an href for the given page number. */
   buildHref: (page: number) => string;
   className?: string;
 }
@@ -103,11 +102,6 @@ function PageLink({
   );
 }
 
-/**
- * Returns the visible page numbers with `null` standing for an ellipsis.
- * Always includes the first page, the last page, and a window around the
- * current page so the user keeps a stable mental model on long catalogs.
- */
 function computePageNumbers(current: number, last: number): Array<number | null> {
   const visible = new Set<number>([1, last]);
   for (let p = Math.max(2, current - 1); p <= Math.min(last - 1, current + 1); p++) {

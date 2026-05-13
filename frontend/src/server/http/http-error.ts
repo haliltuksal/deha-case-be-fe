@@ -1,12 +1,6 @@
 import 'server-only';
 import type { ApiErrorBody, ApiErrorCode } from '@/types/api';
 
-/**
- * Thrown by the Laravel HTTP client when the backend returns a non-2xx status
- * or the request itself fails (network, timeout, JSON parse). Carries the
- * full backend envelope so BFF route handlers can surface it to the browser
- * unchanged.
- */
 export class HttpError extends Error {
   public readonly status: number;
   public readonly code: ApiErrorCode;

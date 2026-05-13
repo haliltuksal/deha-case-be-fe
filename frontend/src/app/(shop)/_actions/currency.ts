@@ -5,11 +5,6 @@ import { CURRENCY_COOKIE_NAME, isCurrency, type Currency } from '@/types/currenc
 
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
 
-/**
- * Server action invoked by the header CurrencySwitcher. Persists the chosen
- * currency in a same-site cookie so the preference survives page reloads
- * and tab navigations without leaking into the JWT cookie's surface area.
- */
 export async function setCurrencyPreference(currency: Currency): Promise<void> {
   if (!isCurrency(currency)) {
     throw new Error('Unsupported currency.');

@@ -21,8 +21,6 @@ export const GET = withErrorHandling(async (request) => {
   const search = url.searchParams.get('search');
   if (search && search.trim().length > 0) query.search = search.trim();
 
-  // The repository returns the full ApiPaginated envelope from Laravel; we
-  // forward it as-is so the BFF surface mirrors the upstream shape.
   const result = await productRepository.list(query);
   return NextResponse.json(result);
 });

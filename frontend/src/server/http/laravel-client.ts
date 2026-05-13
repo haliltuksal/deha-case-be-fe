@@ -6,23 +6,13 @@ import { getRequestContext } from './request-context';
 import { REQUEST_ID_HEADER } from './request-id';
 
 interface LaravelRequestInit extends Omit<RequestInit, 'body'> {
-  /** Bearer token forwarded as Authorization header. */
   token?: string;
-  /** Override the request-id pulled from the active request context. */
   requestId?: string;
-  /** Plain JS object that will be JSON-encoded; mutually exclusive with `body`. */
   json?: unknown;
-  /** Raw body when `json` is not used. */
   body?: BodyInit | null;
-  /** Override the global request timeout. */
   timeoutMs?: number;
 }
 
-/**
- * Single HTTP transport between the BFF and the Laravel API. Every server-side
- * call to the backend goes through this function — it is the only module that
- * is allowed to read `LARAVEL_API_URL` directly. Repositories layer on top.
- */
 export async function laravel<T>(path: string, init: LaravelRequestInit = {}): Promise<T> {
   const {
     token,
@@ -106,7 +96,7 @@ async function readErrorBody(response: Response): Promise<ApiErrorBody> {
       return parsed as ApiErrorBody;
     }
   } catch {
-    // fall through to a synthetic envelope below
+    /* fall through */
   }
   return {
     status: 'error',

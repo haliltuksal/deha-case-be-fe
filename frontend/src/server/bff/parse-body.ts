@@ -2,13 +2,6 @@ import 'server-only';
 import type { ZodError, ZodSchema } from 'zod';
 import { HttpError } from '@/server/http/http-error';
 
-/**
- * Parses and Zod-validates a request body. Failures are reported with the
- * canonical `ERR_VALIDATION` envelope so the BFF response matches what the
- * Laravel backend would have produced. This mirrors the backend's defense
- * in depth: even if a client bypasses the form, the server still rejects
- * malformed input.
- */
 export async function parseJsonBody<T>(request: Request, schema: ZodSchema<T>): Promise<T> {
   let raw: unknown;
   try {
