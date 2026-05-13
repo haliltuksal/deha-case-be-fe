@@ -208,13 +208,13 @@ src/
 │   ├── errors/                   ApiError class + Turkish message map
 │   ├── forms/                    map-api-errors (Zod field errors → RHF)
 │   ├── utils/                    cn, format-date, parse-int, sanitise-next
-│   └── auth-constants.ts         shared with edge middleware
+│   └── auth-constants.ts         shared with the edge proxy
 │
 ├── hooks/                        reusable client hooks (use-api-mutation)
 ├── schemas/                      Zod (auth, cart, product)
 ├── types/                        TS contract types
 ├── config/                       Zod-validated env (lazy proxy)
-└── middleware.ts                 Edge auth-guard (cookie presence)
+└── proxy.ts                      Edge auth-guard (cookie presence) — Next.js 16 convention (formerly `middleware.ts`)
 ```
 
 ### Shared client building blocks
@@ -233,7 +233,7 @@ buttons and forms stay declarative:
 - **`handleFormSubmitError`** (`lib/forms/`) — maps an `ERR_VALIDATION`
   envelope's field errors onto react-hook-form, falling back to a global
   toast when no field matches.
-- **`sanitiseNextPath`** (`lib/utils/`) — shared between the middleware and
+- **`sanitiseNextPath`** (`lib/utils/`) — shared between the edge proxy and
   the login form; rejects external hosts and the auth pages themselves.
 
 ---
@@ -260,7 +260,7 @@ client bundle.
 | **API Endpoint Exposure**            | Browser only sees `/api/*` paths. Laravel endpoint names (`/api/v1/cart/items/...`) never appear in the client bundle.                                                                                                                                                |
 | **Doğrudan Backend Erişimi**         | `LARAVEL_API_URL` is read inside `src/server/*` only. `import 'server-only'` plus an ESLint rule blocks accidental client imports. The BFF route handler is the only network seam.                                                                                    |
 | **Token Çalınması / Yanlış Saklama** | JWT lives in an HttpOnly + SameSite=Lax cookie set by the BFF on login/register/refresh. Response bodies never echo the token. JS cannot read `document.cookie` for it.                                                                                               |
-| **Yetkisiz Erişim**                  | Three layers of defense: (1) Edge middleware checks cookie presence on protected prefixes, (2) Admin layout asserts `is_admin` server-side, (3) BFF route handlers re-verify auth and admin via `withAuth`/`withAdmin`/`withAdminToken` before forwarding to Laravel. |
+| **Yetkisiz Erişim**                  | Three layers of defense: (1) Edge proxy (`proxy.ts`) checks cookie presence on protected prefixes, (2) Admin layout asserts `is_admin` server-side, (3) BFF route handlers re-verify auth and admin via `withAuth`/`withAdmin`/`withAdminToken` before forwarding to Laravel. |
 | **CORS Yanlış Yapılandırması**       | The browser never makes cross-origin requests, so CORS is structurally impossible to misconfigure on the client side. The Laravel backend's CORS allow-list is the only surface.                                                                                      |
 
 Additional hardening:
@@ -361,10 +361,10 @@ These are out of scope for the case and intentionally left out:
 
 - A user whose token is server-side blacklisted but whose cookie is still in
   the browser will see a confused state: header renders as anonymous (because
-  `/auth/me` returns 401), but middleware still treats them as logged in
+  `/auth/me` returns 401), but the edge proxy still treats them as logged in
   (because the cookie is present). The cookie's `Max-Age = expires_in - 30s`
   keeps this window narrow in practice. A production-grade fix would
-  validate the token in middleware or expose a `/api/auth/clear` endpoint.
+  validate the token in the proxy or expose a `/api/auth/clear` endpoint.
 - The Vitest `describe`/`it` suite is intentionally lean. A larger codebase
   would add component tests for forms (LoginForm, ProductForm) and BFF
   route handlers (mocking the upstream). For this case the focus stayed on

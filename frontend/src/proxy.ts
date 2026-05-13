@@ -14,7 +14,7 @@ function isProtected(pathname: string): boolean {
   );
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const hasToken = request.cookies.has(COOKIE_NAME);
 
