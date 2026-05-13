@@ -12,11 +12,6 @@ final readonly class RefreshTokenAction
         private JWTGuard $guard,
     ) {}
 
-    /**
-     * Rotate the current token: blacklist the previous one and emit a fresh
-     * token with the same identity. Token expiry/grace behaviour is governed
-     * by the package's `blacklist_grace_period` setting.
-     */
     public function execute(): string
     {
         return $this->guard->refresh();

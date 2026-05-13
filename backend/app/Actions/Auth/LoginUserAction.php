@@ -25,9 +25,6 @@ final readonly class LoginUserAction
         $token = $this->guard->attempt($credentials->toCredentialsArray());
 
         if (! is_string($token) || $token === '') {
-            // Email is logged but never the password. The request_id added
-            // by AssignRequestId middleware is already in the log context,
-            // so each failed attempt can be correlated end-to-end.
             Log::channel('auth')->warning('Login attempt rejected', [
                 'email' => $credentials->email,
             ]);

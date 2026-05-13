@@ -9,19 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
-/**
- * Canonical envelope for every v1 API response:
- *
- *   {
- *     "status":  "success" | "error",
- *     "message": string|null,
- *     "data":    mixed
- *   }
- *
- * Resources extending `BaseResource` already produce this shape from their
- * `toResponse()`. This trait covers ad-hoc array payloads (e.g. health
- * probes) so controllers do not have to assemble the envelope by hand.
- */
 trait ApiResponse
 {
     /**

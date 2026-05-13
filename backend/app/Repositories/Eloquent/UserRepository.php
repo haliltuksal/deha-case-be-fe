@@ -40,10 +40,6 @@ final class UserRepository extends BaseRepository implements UserRepositoryInter
         return $user;
     }
 
-    /**
-     * Concrete model accessor used by static analyzers — narrows the
-     * abstract `Model` return to `User` for callers.
-     */
     public function find(int $id): ?User
     {
         /** @var User|null $user */

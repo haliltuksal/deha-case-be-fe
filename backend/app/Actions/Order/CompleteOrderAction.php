@@ -12,11 +12,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Admin action: transition any order to COMPLETED. Stock has already
- * been decremented at order-creation time, so completion is purely a
- * status mutation.
- */
 final readonly class CompleteOrderAction
 {
     public function __construct(

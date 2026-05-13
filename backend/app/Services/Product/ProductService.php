@@ -14,11 +14,6 @@ use App\DTOs\Product\ProductFilterData;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-/**
- * Thin orchestrator over the Product action classes. Controllers depend on
- * the service, while individual actions remain reusable from console
- * commands or future admin tooling.
- */
 final readonly class ProductService
 {
     public function __construct(

@@ -14,10 +14,6 @@ use App\DTOs\Auth\RegisterUserData;
 use App\Models\User;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
-/**
- * High-level auth orchestrator. Controllers depend on this service so the
- * concrete actions and the JWT guard remain swappable.
- */
 final readonly class AuthService
 {
     public function __construct(

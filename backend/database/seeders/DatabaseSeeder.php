@@ -13,11 +13,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database with the demo admin and a sample
-     * non-admin user. Credentials are documented in the README so the
-     * reviewer can sign in without going through the registration flow.
-     */
     public function run(): void
     {
         User::query()->updateOrCreate(

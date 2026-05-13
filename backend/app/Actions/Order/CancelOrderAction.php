@@ -14,12 +14,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Cancel an order owned by the user. Returns stock to every line item's
- * referenced product (skipping any whose product was deleted via the
- * SET NULL cascade) and applies the state transition under one
- * transaction so stock and status stay consistent.
- */
 final readonly class CancelOrderAction
 {
     public function __construct(

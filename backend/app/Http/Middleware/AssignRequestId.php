@@ -10,14 +10,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Assigns a correlation id to every API request and propagates it back
- * on the response. If the caller already supplied a sane X-Request-Id
- * we honour it (so a Next.js BFF can trace the same id end-to-end);
- * otherwise we generate a fresh UUIDv4. The id is added to the log
- * context so every entry written during this request is searchable by
- * the same identifier.
- */
 final class AssignRequestId
 {
     private const HEADER = 'X-Request-Id';
@@ -39,11 +31,6 @@ final class AssignRequestId
         return $response;
     }
 
-    /**
-     * Accept the supplied id only if it is a printable, reasonably sized
-     * value; otherwise generate a fresh one. This keeps log lines clean
-     * and prevents header injection.
-     */
     private function normalize(?string $candidate): string
     {
         if ($candidate === null || $candidate === '') {

@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Throwable;
 
-/**
- * Liveness / readiness probe. Verifies that the application can reach its
- * critical infrastructure dependencies (database, redis) before declaring
- * the API ready to serve traffic.
- */
 final class HealthController extends BaseApiController
 {
     /**

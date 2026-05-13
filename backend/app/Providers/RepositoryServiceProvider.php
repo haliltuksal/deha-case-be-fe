@@ -18,10 +18,6 @@ use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\Redis\RedisCartCacheRepository;
 use Illuminate\Support\ServiceProvider;
 
-/**
- * Binds repository contracts to their Eloquent implementations so the rest
- * of the application can depend on interfaces (Dependency Inversion).
- */
 final class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -36,14 +32,7 @@ final class RepositoryServiceProvider extends ServiceProvider
         OrderRepositoryInterface::class => OrderRepository::class,
     ];
 
-    public function register(): void
-    {
-        // Bindings are declared via the $bindings array above; reserved for
-        // any contract that needs conditional or factory-driven resolution.
-    }
+    public function register(): void {}
 
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(): void {}
 }

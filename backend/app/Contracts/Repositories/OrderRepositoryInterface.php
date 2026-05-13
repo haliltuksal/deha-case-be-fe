@@ -19,16 +19,8 @@ interface OrderRepositoryInterface
      */
     public function paginateForUser(User $user, OrderFilterData $filter): LengthAwarePaginator;
 
-    /**
-     * Fetch a single order belonging to the supplied user, or null if it
-     * does not exist or belongs to another user.
-     */
     public function findForUser(User $user, int $orderId): ?Order;
 
-    /**
-     * Fetch a single order without scoping to a user. Used by admin
-     * actions where ownership is not relevant (e.g. completion).
-     */
     public function find(int $orderId): ?Order;
 
     /**

@@ -16,15 +16,6 @@ use Illuminate\Support\Facades\Http;
 use SimpleXMLElement;
 use Throwable;
 
-/**
- * Pulls daily Forex Selling rates from the Turkish Central Bank (TCMB).
- *
- * The endpoint returns an XML document where each `<Currency>` node lists
- * banknote and forex buying/selling rates. We retain only the convertibles
- * declared in `Currency::convertibles()` and use ForexSelling as the
- * canonical retail rate (the rate a customer would face when paying in
- * the foreign currency).
- */
 final class TcmbExchangeRateProvider implements ExchangeRateProviderInterface
 {
     private const TIMEOUT_SECONDS = 10;

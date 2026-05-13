@@ -18,12 +18,6 @@ use App\Services\Currency\CurrencyConverter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Atomic checkout: read the cart with FOR UPDATE locks, snapshot every
- * line into order_items, decrement stock, persist the order header, and
- * clear the cart. Either every side-effect commits or none of them do —
- * the surrounding DB transaction guarantees no half-applied state.
- */
 final readonly class CreateOrderFromCartAction
 {
     public function __construct(
@@ -98,9 +92,6 @@ final readonly class CreateOrderFromCartAction
 
             $this->carts->clearItems($cart);
 
-            // Tie the cache invalidation to the transaction commit so a
-            // rollback (insufficient stock raised mid-loop, etc.) cannot
-            // wipe Redis while MySQL still holds the live cart.
             DB::afterCommit(fn () => $this->cache->forget($user->id));
 
             Log::channel('order')->info('Order created from cart.', [

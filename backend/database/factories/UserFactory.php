@@ -14,9 +14,6 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * Cached hashed password used by every factory call so tests run fast.
-     */
     protected static ?string $password = null;
 
     /**
@@ -34,9 +31,6 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the user has admin privileges.
-     */
     public function admin(): static
     {
         return $this->state(fn (array $attributes): array => [
@@ -44,9 +38,6 @@ class UserFactory extends Factory
         ]);
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
     public function unverified(): static
     {
         return $this->state(fn (array $attributes): array => [

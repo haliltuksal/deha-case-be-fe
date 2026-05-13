@@ -191,11 +191,6 @@ final class CartController extends BaseApiController
         return $this->respondNoContent();
     }
 
-    /**
-     * The auth:api middleware guarantees a User is authenticated by the
-     * time we reach the controller; this helper narrows the request user
-     * type for static analysis.
-     */
     private function user(Request $request): User
     {
         $user = $request->user();

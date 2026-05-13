@@ -10,11 +10,6 @@ use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\Facades\Cache;
 
-/**
- * Cache-driver-backed cart cache. In production it points at Redis (see
- * `config/cache.php`); in tests it can be swapped for the array driver to
- * keep test isolation without standing up a Redis server.
- */
 final readonly class RedisCartCacheRepository implements CartCacheRepositoryInterface
 {
     private const TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -45,9 +40,6 @@ final readonly class RedisCartCacheRepository implements CartCacheRepositoryInte
 
     public function lock(int $userId, int $seconds = 5): Lock
     {
-        // The cache facade exposes lock() across every supported store
-        // (redis in production, array in tests). The injected repository
-        // contract intentionally does not — locks are a Store-level concern.
         return Cache::lock($this->lockKey($userId), $seconds);
     }
 

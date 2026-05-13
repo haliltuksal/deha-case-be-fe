@@ -58,9 +58,6 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    /**
-     * Identifier embedded as the JWT `sub` claim.
-     */
     public function getJWTIdentifier(): mixed
     {
         return $this->getKey();

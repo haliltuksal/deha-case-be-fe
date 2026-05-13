@@ -12,7 +12,4 @@ final class CancelledState extends OrderState
     {
         return OrderStatus::CANCELLED;
     }
-
-    // complete() and cancel() inherit the throwing default — cancelled
-    // is a terminal state.
 }

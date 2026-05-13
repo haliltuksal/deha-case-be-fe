@@ -11,11 +11,6 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Throwable;
 
-/**
- * Base class for any domain exception that should be rendered as a uniform
- * JSON error to API clients. Subclasses declare their HTTP status code and
- * machine-readable error code; the rendering shape is enforced here.
- */
 abstract class ApiException extends RuntimeException implements Responsable
 {
     /**
@@ -29,14 +24,8 @@ abstract class ApiException extends RuntimeException implements Responsable
         parent::__construct($message, 0, $previous);
     }
 
-    /**
-     * The HTTP status code that this exception maps to.
-     */
     abstract public function getStatusCode(): int;
 
-    /**
-     * The machine-readable error code (e.g. "ERR_INSUFFICIENT_STOCK").
-     */
     abstract public function getErrorCode(): string;
 
     /**
@@ -69,9 +58,6 @@ abstract class ApiException extends RuntimeException implements Responsable
         return response()->json($body, $this->getStatusCode());
     }
 
-    /**
-     * Fallback message when the constructor was called without one.
-     */
     protected function defaultMessage(): string
     {
         return HttpResponse::$statusTexts[$this->getStatusCode()] ?? 'Error';

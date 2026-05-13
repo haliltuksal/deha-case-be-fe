@@ -8,11 +8,6 @@ use App\DTOs\Currency\ExchangeRateData;
 use App\Services\Currency\ExchangeRateService;
 use Illuminate\Support\Collection;
 
-/**
- * Pulls the latest exchange rates and warms the cache + database. Invoked
- * by the scheduled `currency:fetch` command and reusable from any future
- * admin endpoint that needs a manual refresh.
- */
 final readonly class FetchDailyExchangeRatesAction
 {
     public function __construct(

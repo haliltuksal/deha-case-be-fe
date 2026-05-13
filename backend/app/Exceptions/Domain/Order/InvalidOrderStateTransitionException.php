@@ -8,10 +8,6 @@ use App\Enums\OrderStatus;
 use App\Support\Http\ApiException;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
-/**
- * Raised when a state transition is requested that the current state
- * does not permit (e.g. cancelling an already-completed order).
- */
 final class InvalidOrderStateTransitionException extends ApiException
 {
     public static function from(OrderStatus $current, string $attemptedAction): self

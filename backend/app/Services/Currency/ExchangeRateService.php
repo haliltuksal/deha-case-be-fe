@@ -13,11 +13,6 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Read-through cache around the configured ExchangeRateProvider plus the
- * persistence layer. Callers ask for rates by currency without caring
- * whether the value came from cache, the database, or a fresh fetch.
- */
 final class ExchangeRateService
 {
     /**

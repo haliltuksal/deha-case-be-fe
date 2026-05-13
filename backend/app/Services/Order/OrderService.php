@@ -14,11 +14,6 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-/**
- * Thin orchestrator over the Order action classes. Controllers depend on
- * this service so the actions remain individually testable and reusable
- * (e.g. from console commands or future admin tooling).
- */
 final readonly class OrderService
 {
     public function __construct(

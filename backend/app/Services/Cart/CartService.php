@@ -14,11 +14,6 @@ use App\DTOs\Cart\UpdateCartItemData;
 use App\Models\Cart;
 use App\Models\User;
 
-/**
- * Orchestrates the cart actions on behalf of an authenticated user.
- * Controllers depend on this service so action wiring remains an
- * implementation detail.
- */
 final readonly class CartService
 {
     public function __construct(

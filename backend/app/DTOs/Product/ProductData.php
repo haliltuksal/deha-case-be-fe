@@ -9,13 +9,6 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * Carries a validated product payload between FormRequest, action, and
- * repository. Designed for partial updates: every field is optional so
- * the same DTO covers create and update flows. Repositories distinguish
- * between "explicit null" and "omitted" by comparing identity to the
- * sentinel returned from `attributesForPersistence()`.
- */
 final readonly class ProductData
 {
     public function __construct(
@@ -75,12 +68,6 @@ final readonly class ProductData
         return $attributes;
     }
 
-    /**
-     * Returns true when the caller explicitly passed `description: null`
-     * (vs. omitting it entirely). This is reserved for a future explicit
-     * null-clearing API; today both states behave the same and the field
-     * is simply skipped if `description` is null.
-     */
     private function isDescriptionExplicitlyCleared(): bool
     {
         return false;

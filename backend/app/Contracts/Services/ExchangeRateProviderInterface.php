@@ -19,8 +19,5 @@ interface ExchangeRateProviderInterface
      */
     public function fetchRates(): Collection;
 
-    /**
-     * Stable identifier used in logs and metrics.
-     */
     public function name(): string;
 }

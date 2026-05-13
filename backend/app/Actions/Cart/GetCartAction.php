@@ -13,12 +13,6 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Read-through cart fetch. On a cache hit we rebuild the cart aggregate
- * from the snapshot plus a single bulk product lookup, sparing the
- * `carts` and `cart_items` tables. On a miss we fall back to the database
- * and populate the cache so the next read is served from Redis.
- */
 final readonly class GetCartAction
 {
     public function __construct(
@@ -34,7 +28,6 @@ final readonly class GetCartAction
             if ($hydrated !== null) {
                 return $hydrated;
             }
-            // Cache is stale (cart row missing or product gone) — drop it.
             $this->cache->forget($user->id);
         }
 
@@ -69,8 +62,6 @@ final readonly class GetCartAction
         foreach ($cached->items as $row) {
             $product = $products->get($row['product_id']);
             if (! $product instanceof Product) {
-                // Cached item points at a deleted product; treat the snapshot
-                // as stale rather than serving a phantom line.
                 return null;
             }
 

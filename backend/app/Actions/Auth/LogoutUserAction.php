@@ -12,11 +12,6 @@ final readonly class LogoutUserAction
         private JWTGuard $guard,
     ) {}
 
-    /**
-     * Invalidate the current bearer token. The package pushes the token's
-     * jti onto the configured blacklist so subsequent requests reusing the
-     * same token are rejected.
-     */
     public function execute(): void
     {
         $this->guard->logout();
